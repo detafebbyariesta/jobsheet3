@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'Input.dart';
-import 'Convert.dart';
-import 'Result.dart';
-import 'Riwayat.dart';
+import 'package:flutter/services.dart';
+import 'convert.dart';
+import 'input.dart';
+import 'result.dart';
 
 void main() {
   runApp(MyApp());
@@ -15,23 +15,18 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   //controller
-  List<String> listViewItem = List<String>();
-  String _newValue = "Kelvin";
-  double _result = 0;
+  TextEditingController etInput = new TextEditingController();
+
+  //variabel berubah
   double _inputUser = 0;
   double _kelvin = 0;
   double _reamur = 0;
-  TextEditingController inputController = new TextEditingController();
-  var listItem = ["Kelvin", "Reamur"];
 
-  void perhitunganSuhu() {
+  void _konversiSuhu(){
     setState(() {
-      _inputUser = double.parse(inputController.text);
-      if (_newValue == "Kelvin")
-        _result = _inputUser + 273;
-      else
-        _result = (4 / 5) * _inputUser;
-      listViewItem.add("$_newValue : $_result");
+      _inputUser = double.parse(etInput.text);
+      _kelvin = _inputUser + 273;
+      _reamur = _inputUser * (4/5);
     });
   }
 
@@ -52,39 +47,58 @@ class _MyAppState extends State<MyApp> {
             margin: EdgeInsets.all(8),
             child: Column(
               children: [
-                Input(inputController: inputController),
-                DropdownButton<String>(
-                  items: listItem.map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                  value: _newValue,
-                  onChanged: (String changeValue) {
-                    setState(() {
-                      _newValue = changeValue;
-                      perhitunganSuhu();
-                    });
-                  },
+                TextFormField(
+                  decoration: InputDecoration(hintText: "Masukkan Suhu Dalam Celcius"),
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  controller: etInput,
+                  keyboardType: TextInputType.number,
                 ),
-                Result(result: _result),
-                Convert(
-                  convertHandler: perhitunganSuhu,
-                ),
-                Container(
-                  margin: EdgeInsets.only(top: 10, bottom: 10),
-                  child: Text(
-                    "Riwayat Konversi",
-                    style: TextStyle(fontSize: 20),
+
+                Expanded(
+                  child: Row (
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget> [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget> [
+                          Text('Suhu dalam Kelvin',
+                          style: TextStyle(height: 1.5)
+                          ),
+                          Text('$_kelvin', style: TextStyle(height: 1.5, fontSize:25),),
+                        ],
+                      ),
+
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget> [
+                          Text('Suhu dalam Reamur',
+                          style: TextStyle(height: 1.5)
+                          ),
+                          Text('$_reamur', style: TextStyle(height: 1.5, fontSize:25),),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
-                Expanded(
-                  child: Riwayat(listViewItem: listViewItem),
-                ),
+
+                SizedBox(
+                  width: 420,
+                  height: 50,
+                  child: (
+                    // ignore: deprecated_member_use
+                    RaisedButton(
+                      onPressed: _konversiSuhu,
+                      color: Colors.blue,
+                      hoverColor: Colors.blueGrey,
+                      textColor: Colors.white,
+                      child: const Text('Konversi Suhu'),
+                    )
+                  ),
+                ), 
               ],
             ),
           ),
-        ));
+        )
+      );
   }
 }

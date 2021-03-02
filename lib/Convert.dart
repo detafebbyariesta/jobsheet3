@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
-class Convert extends StatelessWidget {
-  const Convert({
-    Key key, @required this.convertHandler,
-  }) : super(key: key);
+//Berisi button dan reference ke function yang digunakan untuk
+//melakukan setState().
 
-  final Function convertHandler; 
+class Convert extends StatelessWidget {
+  
+  final Function konvertHandler;
+  Convert({Key key, @required this.konvertHandler});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +15,7 @@ class Convert extends StatelessWidget {
       height: 50,
       // ignore: deprecated_member_use
       child: RaisedButton(
-        onPressed: convertHandler,
+        onPressed: konvertHandler,
         color: Colors.blueAccent,
         textColor: Colors.white,
         child: Text("Konversi Suhu"),
